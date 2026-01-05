@@ -1,3 +1,8 @@
+import org.gradle.kotlin.dsl.annotationProcessor
+import org.gradle.kotlin.dsl.implementation
+
+val queryDslVersion = "5.0.0"
+
 plugins {
 	java
 	id("org.springframework.boot") version "3.5.9"
@@ -25,20 +30,51 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
-	compileOnly("org.projectlombok:lombok")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
-	annotationProcessor("org.projectlombok:lombok")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.springframework.security:spring-security-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-}
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
+    compileOnly("org.projectlombok:lombok")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+    annotationProcessor("org.projectlombok:lombok")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
+    /// QueryDSL 추가
+    /// Spring boot 3.x 이상부터 QueryDsl 패키지를 정의하는 방법
+    implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
+    annotationProcessor("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
+    annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+
+    // P6Spy 의존성 추가
+
+    implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0")
+}
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+ // 컴파일시 자동 생성되는 코드 전용 영역 설정 Querydsl이 생성하는 Q타입 소스 파일들의 출력 위치
+val querydslDir = "$buildDir/generated/querydsl"
+ // sourceSets에 querydsl 경로 추가
+ // build/generated/querydsl 경로를 main 소스 코드로 취급하라는 의미
+sourceSets {
+    main {
+        java {
+            srcDir(querydslDir)
+        }
+    }
+}
+// JavaCompile 작업에 생성 경로 지정
+tasks.withType<JavaCompile> {
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+}
+// clean 작업 시 생성 코드 삭제
+tasks.named("clean") {
+    doLast {
+        file(querydslDir).deleteRecursively()
+    }
 }
