@@ -5,7 +5,7 @@ import static com.querydsl.core.types.PathMetadataFactory.*;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import com.querydsl.core.types.Path;
-import com.sbs.tutorial.base.entity.BaseEntity;
+import com.sbs.tutorial.app1.base.entity.BaseEntity;
 
 import javax.annotation.processing.Generated;
 import java.time.LocalDateTime;

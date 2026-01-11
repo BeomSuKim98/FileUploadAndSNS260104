@@ -1,6 +1,6 @@
 package com.sbs.tutorial.app1.domain.fileUpload.entity;
 
-import com.sbs.tutorial.base.entity.BaseEntity;
+import com.sbs.tutorial.app1.base.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
