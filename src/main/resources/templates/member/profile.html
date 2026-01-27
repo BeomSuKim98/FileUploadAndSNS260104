@@ -5,6 +5,14 @@
 
 <div class="avatar avatar-online avatar-placeholder">
   <div class="text-neutral-content bg-neutral w-24 rounded-full">
-    <img src="https://img.daisyui.com/images/profile/demo/gordon@192.webp" />
+    <img class="profile-img" th:src="@{|/gen/${member.profileImg}|}" alt="userImg">
+  </div>
+</div>
+<div>
+  <div>
+   <span class="text-xl" th:text="${member.username}"></span>
+  </div>
+  <div>
+    <span class="text-xl" th:text="${member.email}"></span>
   </div>
 </div>

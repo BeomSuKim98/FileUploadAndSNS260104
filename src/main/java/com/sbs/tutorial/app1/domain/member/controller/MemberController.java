@@ -53,6 +53,8 @@ public class MemberController {
 
         Member member = memberService.getMemberById(loginedMemberId);
 
+        model.addAttribute("member", member);
+
         return "member/profile";
     }
 }

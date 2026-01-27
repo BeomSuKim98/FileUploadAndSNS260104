@@ -10,5 +10,5 @@ public class MemberJoinForm {
     String username;
     String password;
     String email;
-    MultipartFile profileImage;
+    MultipartFile profileImg;
 }

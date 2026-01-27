@@ -25,14 +25,23 @@ public class MemberService {
     }
 
     public Member join(MemberJoinForm memberJoinForm) {
+        // 파일 이름 정의
         String profileImagePath = "member/" + UUID.randomUUID() + ".png";
 
+        // 저장할 파일의 전체 경로 설정
         File profileImgFile = new File(genFileDirPath + "/" + profileImagePath);
-        if(!profileImgFile.canExecute()){
+
+        if(!profileImgFile.canExecute()) {
             profileImgFile.mkdirs();
         }
+        MultipartFile profileImage = memberJoinForm.getProfileImg();
 
-        MultipartFile profileImage = memberJoinForm.getProfileImage();
+        if (profileImage == null || profileImage.isEmpty()) {
+            System.out.println("로그: 프로필 이미지가 전송되지 않았습니다!");
+        } else {
+            System.out.println("로그: 파일 이름 = " + profileImage.getOriginalFilename());
+            System.out.println("로그: 파일 크기 = " + profileImage.getSize());
+        }
 
         try {
             profileImage.transferTo(profileImgFile);
@@ -44,7 +53,7 @@ public class MemberService {
                 .username(memberJoinForm.getUsername())
                 .password(memberJoinForm.getPassword())
                 .email(memberJoinForm.getEmail())
-                .profileImage(profileImagePath)
+                .profileImg(profileImagePath)
                 .build();
 
         memberRepository.save(member);

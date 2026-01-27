@@ -23,5 +23,5 @@ public class Member extends BaseEntity {
     private String password;
     @Column(unique = true, nullable = false)
     private String email;
-    private String profileImage;
+    private String profileImg;
 }
