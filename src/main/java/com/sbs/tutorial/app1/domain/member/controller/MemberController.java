@@ -3,8 +3,10 @@ package com.sbs.tutorial.app1.domain.member.controller;
 import com.sbs.tutorial.app1.domain.member.entity.Member;
 import com.sbs.tutorial.app1.domain.member.form.MemberJoinForm;
 import com.sbs.tutorial.app1.domain.member.service.MemberService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,26 +17,42 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/member")
 public class MemberController {
     private final MemberService memberService;
+
     @GetMapping("/join")
-    public String showJoinForm() {
+    public String showJoin() {
         return "member/join";
     }
 
     @PostMapping("/join")
-    @ResponseBody
-    public String join(MemberJoinForm memberJoinForm){
+    public String join(MemberJoinForm memberJoinForm, HttpSession session){
         // 회원 가입 처리 로직 추가 예정
         String username = memberJoinForm.getUsername();
 
         Member oldMember = memberService.getMemberByUsername(username);
 
         if(oldMember != null){
-            return null;
+            return "redirect:/?errorMsg=Already exists username";
         }
 
         Member member = memberService.join(memberJoinForm);
 
+        session.setAttribute("loginedMemberId", member.getId());
 
-        return "redirect:/";
+        return "redirect:/member/profile";
+    }
+
+    @GetMapping("/profile")
+    public String showProfile(HttpSession session, Model model){
+        Long loginedMemberId = (Long)session.getAttribute("loginedMemberId");
+
+        boolean isLogined = loginedMemberId != null;
+
+        if(!isLogined){
+            return "redirect:/?errorMsg=Please log in first";
+        }
+
+        Member member = memberService.getMemberById(loginedMemberId);
+
+        return "member/profile";
     }
 }

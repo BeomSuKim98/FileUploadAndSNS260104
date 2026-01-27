@@ -22,9 +22,9 @@ spring:
     password:
     driver-class-name: org.mariadb.jdbc.Driver
 
-    jpa:
-      hibernate:
-        ddl-auto: create
+  jpa:
+    hibernate:
+      ddl-auto: create
 custom: # 추가적인 설정
   genFileDirPath: c:/spring-temp/app1 # 파일 생성 경로
 
